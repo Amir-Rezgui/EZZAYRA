@@ -259,15 +259,19 @@ export default function AnomaliesPage() {
         </div>
       </section>
 
-      {/* ── Loading skeleton ── */}
+      {/* ── Loading state ── */}
       {loading && results.length === 0 && (
-        <div className="flex flex-col gap-3">
-          {[1, 2, 3].map((i) => (
-            <div
-              key={i}
-              className="h-24 animate-pulse rounded-3xl bg-white/50"
-            />
-          ))}
+        <div className="flex flex-col items-center justify-center gap-4 rounded-3xl border border-white/70 bg-white/70 p-12 text-center shadow-olive backdrop-blur min-h-[400px]">
+          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-olive-mid/10 text-olive-mid animate-pulse">
+            <RefreshCw size={32} className="animate-spin" />
+          </div>
+          <h3 className="text-xl font-bold text-olive-dark">Chargement des parcelles en cours...</h3>
+          <div className="max-w-md text-sm text-olive-dark/70 space-y-2">
+            <p>Nous récupérons les données satellitaires NDVI depuis <strong>Google Earth Engine</strong>.</p>
+            <p className="rounded-lg bg-orange-50 px-3 py-2 text-orange-700 text-xs font-semibold">
+              ⏳ Lors du premier lancement, cette opération peut prendre entre 30 et 60 secondes. Merci de patienter !
+            </p>
+          </div>
         </div>
       )}
 
