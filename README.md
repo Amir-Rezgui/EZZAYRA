@@ -16,6 +16,24 @@ Le projet est divisé en **3 composants principaux** :
 
 ---
 
+## 📦 Pré-requis (Si vous venez de cloner le projet)
+
+Avant de lancer les serveurs, vous devez installer les dépendances qui ne sont pas incluses sur GitHub pour des raisons de taille.
+
+**1. FFmpeg (Requis pour la transcription vocale Whisper) :**
+- Téléchargez l'exécutable `ffmpeg.exe` depuis internet (par exemple via [gyan.dev](https://www.gyan.dev/ffmpeg/builds/)).
+- Placez le fichier `ffmpeg.exe` directement dans le dossier `voice-agent/`.
+
+**2. Dépendances Python :**
+Installez les packages requis pour les deux backends. Ouvrez deux terminaux et tapez :
+- Pour le Backend GEE : `cd Sujet3Back` puis `pip install -r requer.txt`
+- Pour l'Agent Vocal : `cd voice-agent` puis `pip install -r requirements.txt`
+
+**3. Dépendances Frontend :**
+- Pour le Frontend React : `cd ezzayra-platform/frontend` puis `npm install`
+
+---
+
 ## 🚀 Étape 1 : Lancer le Backend d'Analyse Spatiale (Sujet3Back)
 
 Ce serveur récupère les données satellitaires NDVI depuis Google Earth Engine et calcule les scores d'anomalie.
@@ -25,8 +43,7 @@ Ce serveur récupère les données satellitaires NDVI depuis Google Earth Engine
    ```bash
    cd Sujet3Back
    ```
-3. *(Si nécessaire)* Activez votre environnement virtuel Python.
-4. Lancez le serveur :
+3. Lancez le serveur :
    ```bash
    python server.py
    ```
@@ -60,15 +77,11 @@ Une fois les backends démarrés, vous pouvez lancer l'interface web.
    ```bash
    cd ezzayra-platform/frontend
    ```
-3. *(Si c'est la première fois)* Installez les dépendances :
-   ```bash
-   npm install
-   ```
-4. Lancez le serveur de développement :
+3. Lancez le serveur de développement :
    ```bash
    npm run dev
    ```
-5. Ouvrez votre navigateur à l'adresse indiquée (généralement `http://localhost:5173`).
+4. Ouvrez votre navigateur à l'adresse indiquée (généralement `http://localhost:5173`).
 
 ---
 
