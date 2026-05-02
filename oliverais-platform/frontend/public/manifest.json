@@ -1,0 +1,21 @@
+{
+  "name": "EZZAYRA - Analyse intelligente",
+  "short_name": "EZZAYRA",
+  "description": "Plateforme d'analyse des oliveraies tunisiennes par satellite et IA",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f0f4e8",
+  "theme_color": "#4a7c59",
+  "icons": [
+    {
+      "src": "/icons/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/icons/icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}
