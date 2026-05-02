@@ -1,6 +1,7 @@
 # app.py — FastAPI avec modèle global
 
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Optional
 import pickle
@@ -11,11 +12,11 @@ from shapely.geometry import Polygon as ShapelyPolygon
 import uvicorn
 
 import requests
-from firebase_config import db
+# from firebase_config import db
 
-db.collection("users").document("user1").set({
-    "name": "Hedi"
-})
+# db.collection("users").document("user1").set({
+#     "name": "Hedi"
+# })
 
 def get_historical_weather(lat, lng, date_str):
     """
@@ -174,10 +175,19 @@ app = FastAPI(
     version="2.0"
 )
 
+# ── CORS — autorise le frontend React (Vite) ────────────────────────────────
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Autorise tous les ports en dev
+    allow_credentials=False, # Doit être False si allow_origins=["*"]
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 # ── Initialisation Earth Engine ────────────────────────
 print("⏳ Initialisation Google Earth Engine...")
 try:
-    ee.Authenticate()
+    ee.Authenticate(force=True)
     ee.Initialize(project='hackathon-ndvi')
     print("✅ Google Earth Engine initialisé avec succès.")
 except Exception as e:

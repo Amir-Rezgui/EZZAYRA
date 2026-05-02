@@ -1,4 +1,4 @@
-import { NavLink, Route, Routes } from "react-router-dom";
+import { NavLink, Route, Routes, Navigate } from "react-router-dom";
 import {
   Map,
   Mic2,
@@ -15,18 +15,15 @@ import ChatbotPage from "./pages/ChatbotPage";
 import AnalysesPage from "./pages/AnalysesPage";
 import AnomaliesPage from "./pages/AnomaliesPage";
 import ZoneAnalysisPage from "./pages/ZoneAnalysisPage";
-import DemoPage from "./pages/DemoPage";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { useAuth } from "./contexts/AuthContext";
 
 const navItems = [
-  { to: "/", label: "Carte", icon: Map },
   { to: "/chatbot", label: "Chatbot", icon: Mic2 },
   { to: "/analyses", label: "Analyses", icon: ClipboardList },
   { to: "/anomalies", label: "Anomalies", icon: AlertTriangle },
-  { to: "/demo", label: "Demo", icon: Sparkles },
 ];
 
 function AppShell() {
@@ -44,9 +41,6 @@ function AppShell() {
               <p className="text-sm uppercase tracking-[0.35em]">EZZAYRA</p>
             </div>
             <h1 className="mt-3 text-3xl">Analyse intelligente</h1>
-            <p className="mt-3 text-sm text-sand/90">
-              Carte, NDVI, chatbot vocal et demo jury, dans une seule app.
-            </p>
           </div>
 
           {/* Nav */}
@@ -98,13 +92,6 @@ function AppShell() {
                 </button>
               </div>
             )}
-
-            <div className="rounded-3xl border border-olive-mid/20 bg-white/70 p-5 text-sm">
-              <p className="font-semibold text-olive-dark">Mode demo</p>
-              <p className="mt-2 text-olive-dark/70">
-                Active les donnees prechargees pour impressionner le jury en 45 secondes.
-              </p>
-            </div>
           </div>
         </aside>
 
@@ -112,12 +99,11 @@ function AppShell() {
         <main className="flex-1 px-5 pb-24 pt-8 md:px-10 md:pb-10">
           <Routes>
             <Route element={<ProtectedRoute />}>
-              <Route path="/" element={<MapPage />} />
+              <Route path="/" element={<Navigate to="/anomalies" replace />} />
               <Route path="/chatbot" element={<ChatbotPage />} />
               <Route path="/analyses" element={<AnalysesPage />} />
               <Route path="/anomalies" element={<AnomaliesPage />} />
               <Route path="/anomalies/zone/:id" element={<ZoneAnalysisPage />} />
-              <Route path="/demo" element={<DemoPage />} />
             </Route>
           </Routes>
         </main>

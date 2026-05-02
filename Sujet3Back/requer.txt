@@ -7,5 +7,5 @@ shapely
 scikit-learn
 joblib
 requests
-uvicorn
 firebase-admin
+earthengine-api

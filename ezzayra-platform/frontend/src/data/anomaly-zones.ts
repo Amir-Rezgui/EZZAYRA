@@ -29,6 +29,7 @@ export interface AnomalyZone {
   coordinates: [number, number][];
   alerts: ZoneAlert[];
   analyses: ZoneAnalysis[];
+  history?: { label: string; observe: number; attendu: number }[];
 }
 
 // ── DEMO ZONES ────────────────────────────────────────────────────────────────
