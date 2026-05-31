@@ -40,7 +40,7 @@ INDEX_DIR = Path("faiss_index")
 EMBEDDING_MODEL = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
 
 # Anti-hallucination threshold: if top similarity < this → refuse to answer
-RELEVANCE_THRESHOLD = 0.60   # Step 6: guard-rail
+RELEVANCE_THRESHOLD = 0.50   # Step 6: guard-rail
 TOP_K = 5                     # number of chunks to retrieve
 
 # TTS voice for Arabic (edge-tts Microsoft voices)
@@ -106,8 +106,9 @@ def retrieve(query: str, cnn_label: Optional[str] = None, top_k: int = TOP_K) ->
 
     # Augment query with CNN result for better retrieval
     augmented_query = query
-    if cnn_label:
-        augmented_query = f"{query} {cnn_label} olive disease symptoms treatment"
+    if cnn_label and cnn_label != "unknown":
+        clean_label = cnn_label.replace("_", " ")
+        augmented_query = f"{query} {clean_label} olive disease symptoms treatment"
 
     # Embed query
     q_emb = embed_model.encode([augmented_query], normalize_embeddings=True).astype("float32")
@@ -162,11 +163,7 @@ def translate_and_format(question: str, retrieved_chunks: List[str], meta: List[
     for i, (chunk, m) in enumerate(zip(retrieved_chunks, meta)):
         sources.add(m['source'])
         try:
-            # Extract just the first 1-2 sentences to keep it very brief
-            sentences = [s.strip() for s in chunk.split('.') if len(s.strip()) > 10]
-            short_chunk = '. '.join(sentences[:2]) + "." if sentences else chunk[:150] + "..."
-            
-            translated_text = translator.translate(short_chunk)
+            translated_text = translator.translate(chunk)
             translated_parts.append(translated_text)
         except Exception as e:
             print(f"Translation error: {e}")

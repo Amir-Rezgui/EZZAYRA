@@ -3,13 +3,13 @@ title Olive Health Assistant - All Servers
 echo 🫒 Starting Olive Health Assistant Servers...
 
 echo 🎙️ Starting ASR Server...
-start /b "" "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\python.exe" asr_server.py
+start "ASR Server (8001)" "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\python.exe" asr_server.py
 
 echo 📸 Starting CNN Server...
-start /b "" "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\python.exe" cnn_server.py
+start "CNN Server (8003)" "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\python.exe" cnn_server.py
 
 echo 📚 Starting RAG Server...
-start /b "" "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\python.exe" rag_server.py
+start "RAG Server (8002)" "C:\Users\Administrator\AppData\Local\Programs\Python\Python311\python.exe" rag_server.py
 
 echo.
 echo ✅ All servers are starting in the background.

@@ -25,6 +25,15 @@ MODEL_PATH      = Path("./models/best_model.pt")
 CLASS_INFO_PATH = Path("./models/class_info.json")
 DEVICE          = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+REMOVEBG_API_KEY = os.getenv("REMOVEBG_API_KEY")
+
+import requests
+
 # ── Load class_info.json ──────────────────────────────────────────────────────
 with open(CLASS_INFO_PATH, encoding="utf-8") as f:
     class_info = json.load(f)
@@ -83,7 +92,28 @@ async def classify(image: UploadFile = File(...)):
     if not image.content_type.startswith("image/"):
         raise HTTPException(status_code=400, detail="File must be an image")
     try:
-        img = Image.open(io.BytesIO(await image.read())).convert("RGB")
+        img_bytes = await image.read()
+        
+        # 1. Remove background via remove.bg API
+        print("Calling remove.bg API...")
+        bg_response = requests.post(
+            'https://api.remove.bg/v1.0/removebg',
+            files={'image_file': ('image.jpg', img_bytes, image.content_type)},
+            data={'size': 'auto'},
+            headers={'X-Api-Key': REMOVEBG_API_KEY},
+        )
+        
+        if bg_response.status_code == requests.codes.ok:
+            # remove.bg returns a transparent PNG. We paste it on a white background.
+            png_img = Image.open(io.BytesIO(bg_response.content)).convert("RGBA")
+            img = Image.new("RGB", png_img.size, (255, 255, 255))
+            img.paste(png_img, mask=png_img.split()[3]) # Use alpha channel as mask
+            print("✓ Background removed successfully")
+        else:
+            print(f"⚠️ remove.bg error {bg_response.status_code}: {bg_response.text}")
+            print("Falling back to original image...")
+            img = Image.open(io.BytesIO(img_bytes)).convert("RGB")
+
         tensor = TRANSFORM(img).unsqueeze(0).to(DEVICE)
 
         with torch.no_grad():
@@ -92,13 +122,21 @@ async def classify(image: UploadFile = File(...)):
         pred_idx   = int(probs.argmax())
         pred_name  = CLASS_NAMES[pred_idx]
         confidence = float(probs[pred_idx])
+        
+        # Modification : si le modèle n'est pas sûr de lui
+        if confidence < 0.60:
+            pred_name = "unknown"
+            label_ar = "الصورة غير واضحة، لا يمكنني الجزم (I can't really tell)"
+        else:
+            label_ar = DARIJA_LABELS.get(pred_name, "")
+
         all_scores = {name: round(float(p), 4) for name, p in zip(CLASS_NAMES, probs)}
 
         print(f"Classified: {pred_name} ({confidence:.1%}) | {all_scores}")
 
         return {
             "label":      pred_name,
-            "label_ar":   DARIJA_LABELS.get(pred_name, ""),
+            "label_ar":   label_ar,
             "confidence": round(confidence, 4),
             "all_scores": all_scores,
         }
